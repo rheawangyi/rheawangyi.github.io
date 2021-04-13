@@ -1,13 +1,3 @@
----
-layout: post
-title: Blog 1
----
-{::options parse_block_html="true" /}
-<div class="got-help">
-## Blog Goal: Climate Data with Pandas and SQLite3
-</div>
-{::options parse_block_html="false" /}
-
 ## 1. Create a Database 
 Goal:
 - Create a database with three tables: temperatures, stations, and countries.
