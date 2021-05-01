@@ -1,17 +1,12 @@
----
-layout: post
-title: Blog 2
----
+# Blog Post 2: Spectral Clustering
 
-# Spectral Clustering
-
-Tutorial on a simple version of the *spectral clustering* algorithm for clustering data points.
+In this blog post, you'll write a tutorial on a simple version of the *spectral clustering* algorithm for clustering data points. Each of the below parts will pose to you one or more specific tasks. You should plan to both:
 
 ### Notation
 In all the math below: 
-- Boldface capital letters like $$\mathbf{A}$$ refer to matrices (2d arrays of numbers). 
-- Boldface lowercase letters like $$\mathbf{v}$$ refer to vectors (1d arrays of numbers). 
-- $$\mathbf{A}\mathbf{B}$$ refers to a matrix-matrix product (`A@B`). $$\mathbf{A}\mathbf{v}$$ refers to a matrix-vector product (`A@v`). 
+- Boldface capital letters like $\mathbf{A}$ refer to matrices (2d arrays of numbers). 
+- Boldface lowercase letters like $\mathbf{v}$ refer to vectors (1d arrays of numbers). 
+- $\mathbf{A}\mathbf{B}$ refers to a matrix-matrix product (`A@B`). $\mathbf{A}\mathbf{v}$ refers to a matrix-vector product (`A@v`). 
 
 ## Introduction
 
@@ -46,7 +41,7 @@ plt.scatter(X[:,0], X[:,1])
 
 
     
-![png](\images\output_2_1.png)
+![png](output_2_1.png)
     
 
 
@@ -70,7 +65,7 @@ plt.scatter(X[:,0], X[:,1], c = km.predict(X))
 
 
     
-![png](\images\output_4_1.png)
+![png](output_4_1.png)
     
 
 
@@ -96,7 +91,7 @@ plt.scatter(X[:,0], X[:,1])
 
 
     
-![png](\images\output_6_1.png)
+![png](output_6_1.png)
     
 
 
@@ -118,7 +113,7 @@ plt.scatter(X[:,0], X[:,1], c = km.predict(X))
 
 
     
-![png](\images\output_8_1.png)
+![png](output_8_1.png)
     
 
 
@@ -128,7 +123,7 @@ As we'll see, spectral clustering is able to correctly cluster the two crescents
 
 ## Part A
 
-We first construct the *similarity matrix* $$\mathbf{A}$$. $$\mathbf{A}$$ should be a matrix (2d `np.ndarray`) with shape `(n, n)` (recall that `n` is the number of data points). When constructing the similarity matrix, use a parameter `epsilon`.For this part, use `epsilon = 0.4`.  
+We first construct the *similarity matrix* $\mathbf{A}$. $\mathbf{A}$ should be a matrix (2d `np.ndarray`) with shape `(n, n)` (recall that `n` is the number of data points). When constructing the similarity matrix, use a parameter `epsilon`.For this part, use `epsilon = 0.4`.  
 
 Entry `A[i,j]` should be equal to `1` if `X[i]` (the coordinates of data point `i`) is within distance `epsilon` of `X[j]` (the coordinates of data point `j`). In practical code, we test whether `(X[i] - X[j])**2 < epsilon**2` for each choice of `i` and `j`.
 **The diagonal entries `A[i,i]` should all be equal to zero.** So here we use the function `np.fill_diagonal()` to set the values of the diagonal of a matrix.  
@@ -168,22 +163,22 @@ A
 
 The matrix `A` now contains information about which points are near (within distance `epsilon`) which other points. We now pose the task of clustering the data points in `X` as the task of partitioning the rows and columns of `A`. 
 
-Let $$d_i = \sum_{j = 1}^n a_{ij}$$ be the $$i$$th row-sum of $$\mathbf{A}$$, which is also called the *degree* of $$i$$. Let $$C_0$$ and $$C_1$$ be two clusters of the data points. We assume that every data point is in either $$C_0$$ or $$C_1$$. The cluster membership as being specified by `y`. We think of `y[i]` as being the label of point `i`. So, if `y[i] = 1`, then point `i` (and therefore row $$i$$ of $$\mathbf{A}$$) is an element of cluster $$C_1$$.  
+Let $d_i = \sum_{j = 1}^n a_{ij}$ be the $i$th row-sum of $\mathbf{A}$, which is also called the *degree* of $i$. Let $C_0$ and $C_1$ be two clusters of the data points. We assume that every data point is in either $C_0$ or $C_1$. The cluster membership as being specified by `y`. We think of `y[i]` as being the label of point `i`. So, if `y[i] = 1`, then point `i` (and therefore row $i$ of $\mathbf{A}$) is an element of cluster $C_1$.  
 
-The *binary norm cut objective* of a matrix $$\mathbf{A}$$ is the function 
+The *binary norm cut objective* of a matrix $\mathbf{A}$ is the function 
 
 $$N_{\mathbf{A}}(C_0, C_1)\equiv \mathbf{cut}(C_0, C_1)\left(\frac{1}{\mathbf{vol}(C_0)} + \frac{1}{\mathbf{vol}(C_1)}\right)\;.$$
 
 In this expression, 
-- $$\mathbf{cut}(C_0, C_1) \equiv \sum_{i \in C_0, j \in C_1} a_{ij}$$ is the *cut* of the clusters $$C_0$$ and $$C_1$$. 
-- $$\mathbf{vol}(C_0) \equiv \sum_{i \in C_0}d_i$$, where $$d_i = \sum_{j = 1}^n a_{ij}$$ is the *degree* of row $$i$$ (the total number of all other rows related to row $$i$$ through $$A$$). The *volume* of cluster $$C_0$$ is a measure of the size of the cluster. 
+- $\mathbf{cut}(C_0, C_1) \equiv \sum_{i \in C_0, j \in C_1} a_{ij}$ is the *cut* of the clusters $C_0$ and $C_1$. 
+- $\mathbf{vol}(C_0) \equiv \sum_{i \in C_0}d_i$, where $d_i = \sum_{j = 1}^n a_{ij}$ is the *degree* of row $i$ (the total number of all other rows related to row $i$ through $A$). The *volume* of cluster $C_0$ is a measure of the size of the cluster. 
 
-A pair of clusters $$C_0$$ and $$C_1$$ is considered to be a "good" partition of the data when $$N_{\mathbf{A}}(C_0, C_1)$$ is small. To see why, let's look at each of the two factors in this objective function separately. 
+A pair of clusters $C_0$ and $C_1$ is considered to be a "good" partition of the data when $N_{\mathbf{A}}(C_0, C_1)$ is small. To see why, let's look at each of the two factors in this objective function separately. 
 
 
 #### B.1 The Cut Term
 
-First, the cut term $$\mathbf{cut}(C_0, C_1)$$ is the number of nonzero entries in $$\mathbf{A}$$ that relate points in cluster $$C_0$$ to points in cluster $$C_1$$. Saying that this term should be small is the same as saying that points in $$C_0$$ shouldn't usually be very close to points in $$C_1$$. 
+First, the cut term $\mathbf{cut}(C_0, C_1)$ is the number of nonzero entries in $\mathbf{A}$ that relate points in cluster $C_0$ to points in cluster $C_1$. Saying that this term should be small is the same as saying that points in $C_0$ shouldn't usually be very close to points in $C_1$. 
 We will write a function called `cut(A,y)` to compute the cut term by summing up the entries `A[i,j]` for each pair of points `(i,j)` in different clusters. 
 
 
@@ -217,14 +212,14 @@ print("Cur for the random labels is: ", cut(A, y_random))
 
 #### B.2 The Volume Term 
 
-Now take a look at the second factor in the norm cut objective. This is the *volume term*. As mentioned above, the *volume* of cluster $$C_0$$ is a measure of how "big" cluster $$C_0$$ is. If we choose cluster $$C_0$$ to be small, then $$\mathbf{vol}(C_0)$$ will be small and $$\frac{1}{\mathbf{vol}(C_0)}$$ will be large, leading to an undesirable higher objective value. 
+Now take a look at the second factor in the norm cut objective. This is the *volume term*. As mentioned above, the *volume* of cluster $C_0$ is a measure of how "big" cluster $C_0$ is. If we choose cluster $C_0$ to be small, then $\mathbf{vol}(C_0)$ will be small and $\frac{1}{\mathbf{vol}(C_0)}$ will be large, leading to an undesirable higher objective value. 
 
-Synthesizing, the binary normcut objective asks us to find clusters $C_0$ and $$C_1$$ such that:
+Synthesizing, the binary normcut objective asks us to find clusters $C_0$ and $C_1$ such that:
 
-1. There are relatively few entries of $$\mathbf{A}$$ that join $$C_0$$ and $$C_1$$. 
-2. Neither $$C_0$$ and $$C_1$$ are too small. 
+1. There are relatively few entries of $\mathbf{A}$ that join $C_0$ and $C_1$. 
+2. Neither $C_0$ and $C_1$ are too small. 
 
-- We first write a function called `vols(A,y)` which computes the volumes of $$C_0$$ and $$C_1$$, returning them as a tuple.
+- We first write a function called `vols(A,y)` which computes the volumes of $C_0$ and $C_1$, returning them as a tuple.
 
 - Then, we write a function called `normcut(A,y)` which uses `cut(A,y)` and `vols(A,y)` to compute the binary normalized cut objective of a matrix `A` with clustering vector `y`. 
 
@@ -271,9 +266,9 @@ We can see that the true norm cut is smaller than the arbitrary norm cut.
 
 ## Part C
 
-We have now defined a normalized cut objective which takes small values when the input clusters are (a) joined by relatively few entries in $$A$$ and (b) not too small. One approach to clustering is to try to find a cluster vector `y` such that `normcut(A,y)` is small. However, this is an NP-hard combinatorial optimization problem, which means that may not be possible to find the best clustering in practical time, even for relatively small data sets. We need a math trick! 
+We have now defined a normalized cut objective which takes small values when the input clusters are (a) joined by relatively few entries in $A$ and (b) not too small. One approach to clustering is to try to find a cluster vector `y` such that `normcut(A,y)` is small. However, this is an NP-hard combinatorial optimization problem, which means that may not be possible to find the best clustering in practical time, even for relatively small data sets. We need a math trick! 
 
-Here's the trick: define a new vector $$\mathbf{z} \in \mathbb{R}^n$$ such that: 
+Here's the trick: define a new vector $\mathbf{z} \in \mathbb{R}^n$ such that: 
 
 $$
 z_i = 
@@ -284,21 +279,21 @@ z_i =
 $$
 
 
-Note that the signs of  the elements of $$\mathbf{z}$$ contain all the information from $$\mathbf{y}$$: if $$i$$ is in cluster $$C_0$$, then $$y_i = 0$ and $z_i > 0$. 
+Note that the signs of  the elements of $\mathbf{z}$ contain all the information from $\mathbf{y}$: if $i$ is in cluster $C_0$, then $y_i = 0$ and $z_i > 0$. 
 
 Next, if you like linear algebra, you can show that 
 
 $$\mathbf{N}_{\mathbf{A}}(C_0, C_1) = 2\frac{\mathbf{z}^T (\mathbf{D} - \mathbf{A})\mathbf{z}}{\mathbf{z}^T\mathbf{D}\mathbf{z}}\;,$$
 
-where $$\mathbf{D}$$ is the diagonal matrix with nonzero entries $$d_{ii} = d_i$$, and  where $$d_i = \sum_{j = 1}^n a_i$$ is the degree (row-sum) from before. Here are our steps:
+where $\mathbf{D}$ is the diagonal matrix with nonzero entries $d_{ii} = d_i$, and  where $d_i = \sum_{j = 1}^n a_i$ is the degree (row-sum) from before. Here are our steps:
 
-1. Write a function called `transform(A,y)` to compute the appropriate $$\mathbf{z}$$ vector given `A` and `y`, using the formula above. 
+1. Write a function called `transform(A,y)` to compute the appropriate $\mathbf{z}$ vector given `A` and `y`, using the formula above. 
 2. Then, check the equation above that relates the matrix product to the normcut objective, by computing each side separately and checking that they are equal. 
-3. Check the identity $$\mathbf{z}^T\mathbf{D}\mathbb{1} = 0$$, where $\mathbb{1}$ is the vector of `n` ones (i.e. `np.ones(n)`). This identity effectively says that $$\mathbf{z}$$ should contain roughly as many positive as negative entries. 
+3. Check the identity $\mathbf{z}^T\mathbf{D}\mathbb{1} = 0$, where $\mathbb{1}$ is the vector of `n` ones (i.e. `np.ones(n)`). This identity effectively says that $\mathbf{z}$ should contain roughly as many positive as negative entries. 
 
 #### Programming Note
 
-We can compute $$\mathbf{z}^T\mathbf{D}\mathbf{z}$$ as `z@D@z`, 
+We can compute $\mathbf{z}^T\mathbf{D}\mathbf{z}$ as `z@D@z`, 
 
 #### Note
 The equation above is exact, but computer arithmetic is not! `np.isclose(a,b)` is a good way to check if `a` is "close" to `b`, in the sense that they differ by less than the smallest amount that the computer is (by default) able to quantify. 
@@ -364,9 +359,9 @@ In the last part, we saw that the problem of minimizing the normcut objective is
 
 $$ R_\mathbf{A}(\mathbf{z})\equiv \frac{\mathbf{z}^T (\mathbf{D} - \mathbf{A})\mathbf{z}}{\mathbf{z}^T\mathbf{D}\mathbf{z}} $$
 
-subject to the condition $$\mathbf{z}^T\mathbf{D}\mathbb{1} = 0$$. It's actually possible to bake this condition into the optimization, by substituting for $$\mathbf{z}$$ the orthogonal complement of $$\mathbf{z}$$ relative to $$\mathbf{D}\mathbf{1}$$. In the code below, I define an `orth_obj` function which handles this for you. 
+subject to the condition $\mathbf{z}^T\mathbf{D}\mathbb{1} = 0$. It's actually possible to bake this condition into the optimization, by substituting for $\mathbf{z}$ the orthogonal complement of $\mathbf{z}$ relative to $\mathbf{D}\mathbf{1}$. In the code below, I define an `orth_obj` function which handles this for you. 
 
-Use the `minimize` function from `scipy.optimize` to minimize the function `orth_obj` with respect to $$\mathbf{z}$$. Note that this computation might take a little while. Explicit optimization can be pretty slow! Give the minimizing vector a name `z_`. 
+Use the `minimize` function from `scipy.optimize` to minimize the function `orth_obj` with respect to $\mathbf{z}$. Note that this computation might take a little while. Explicit optimization can be pretty slow! Give the minimizing vector a name `z_`. 
 
 
 ```python
@@ -389,7 +384,7 @@ from scipy.optimize import minimize
 z_min = minimize(orth_obj, z, constraints = {'type': 'eq', 'fun': lambda z: z @ d})["x"]
 ```
 
-**Note**: there's a cheat going on here! We originally specified that the entries of $$\mathbf{z}$$ should take only one of two values (back in Part C), whereas now we're allowing the entries to have *any* value! This means that we are no longer exactly optimizing the normcut objective, but rather an approximation. This cheat is so common that deserves a name: it is called the *continuous relaxation* of the normcut problem. 
+**Note**: there's a cheat going on here! We originally specified that the entries of $\mathbf{z}$ should take only one of two values (back in Part C), whereas now we're allowing the entries to have *any* value! This means that we are no longer exactly optimizing the normcut objective, but rather an approximation. This cheat is so common that deserves a name: it is called the *continuous relaxation* of the normcut problem. 
 
 ## Part E
 
@@ -411,7 +406,7 @@ plt.scatter(X[:,0], X[:,1], c = np.where(z_min < 0, 0, 1))
 
 
     
-![png](\images\output_33_1.png)
+![png](output_33_1.png)
     
 
 
@@ -425,9 +420,9 @@ Recall that what we would like to do is minimize the function
 
 $$ R_\mathbf{A}(\mathbf{z})\equiv \frac{\mathbf{z}^T (\mathbf{D} - \mathbf{A})\mathbf{z}}{\mathbf{z}^T\mathbf{D}\mathbf{z}} $$
 
-with respect to $$\mathbf{z}$$, subject to the condition $$\mathbf{z}^T\mathbf{D}\mathbb{1} = 0$$. 
+with respect to $\mathbf{z}$, subject to the condition $\mathbf{z}^T\mathbf{D}\mathbb{1} = 0$. 
 
-The Rayleigh-Ritz Theorem states that the minimizing $$\mathbf{z}$$ must be the solution with smallest eigenvalue of the generalized eigenvalue problem 
+The Rayleigh-Ritz Theorem states that the minimizing $\mathbf{z}$ must be the solution with smallest eigenvalue of the generalized eigenvalue problem 
 
 $$ (\mathbf{D} - \mathbf{A}) \mathbf{z} = \lambda \mathbf{D}\mathbf{z}\;, \quad \mathbf{z}^T\mathbf{D}\mathbb{1} = 0$$
 
@@ -435,11 +430,11 @@ which is equivalent to the standard eigenvalue problem
 
 $$ \mathbf{D}^{-1}(\mathbf{D} - \mathbf{A}) \mathbf{z} = \lambda \mathbf{z}\;, \quad \mathbf{z}^T\mathbb{1} = 0\;.$$
 
-Why is this helpful? Well, $$\mathbb{1}$$ is actually the eigenvector with smallest eigenvalue of the matrix $$\mathbf{D}^{-1}(\mathbf{D} - \mathbf{A})$$. 
+Why is this helpful? Well, $\mathbb{1}$ is actually the eigenvector with smallest eigenvalue of the matrix $\mathbf{D}^{-1}(\mathbf{D} - \mathbf{A})$. 
 
-> So, the vector $$\mathbf{z}$$ that we want must be the eigenvector with  the *second*-smallest eigenvalue. 
+> So, the vector $\mathbf{z}$ that we want must be the eigenvector with  the *second*-smallest eigenvalue. 
 
-In the following codes, we construct the matrix $$\mathbf{L} = \mathbf{D}^{-1}(\mathbf{D} - \mathbf{A})$$, which is often called the (normalized) *Laplacian* matrix of the similarity matrix $$\mathbf{A}$$. Find the eigenvector corresponding to its second-smallest eigenvalue, and call it `z_eig`. Then, plot the data again, using the sign of `z_eig` as the color. 
+In the following codes, we construct the matrix $\mathbf{L} = \mathbf{D}^{-1}(\mathbf{D} - \mathbf{A})$, which is often called the (normalized) *Laplacian* matrix of the similarity matrix $\mathbf{A}$. Find the eigenvector corresponding to its second-smallest eigenvalue, and call it `z_eig`. Then, plot the data again, using the sign of `z_eig` as the color. 
 
 
 ```python
@@ -463,7 +458,7 @@ plt.scatter(X[:,0], X[:,1], c = np.where(z_eig < 0, 0, 1))
 
 
     
-![png](\images\output_36_1.png)
+![png](output_36_1.png)
     
 
 
@@ -543,7 +538,7 @@ plt.scatter(X2[:,0], X2[:,1], c = z2) # Plots it
 
 
     
-![png](\images\output_41_1.png)
+![png](output_41_1.png)
     
 
 
@@ -565,7 +560,7 @@ plt.scatter(X[:,0], X[:,1], c = clusterLabels)
 
 
     
-![png](\images\output_42_1.png)
+![png](output_42_1.png)
     
 
 
@@ -593,7 +588,7 @@ plt.scatter(X[:,0], X[:,1])
 
 
     
-![png](\images\output_45_1.png)
+![png](output_45_1.png)
     
 
 
@@ -615,7 +610,7 @@ plt.scatter(X[:,0], X[:,1], c = km.predict(X))
 
 
     
-![png](\images\output_47_1.png)
+![png](output_47_1.png)
     
 
 
@@ -635,7 +630,7 @@ plt.scatter(X[:,0], X[:,1], c = spectral_clustering(X, 1))
 
 
     
-![png](\images\output_49_1.png)
+![png](output_49_1.png)
     
 
 
@@ -653,7 +648,7 @@ plt.scatter(X[:,0], X[:,1], c = spectral_clustering(X, 0.1))
 
 
     
-![png](\images\output_50_1.png)
+![png](output_50_1.png)
     
 
 
@@ -673,7 +668,7 @@ plt.scatter(X[:,0], X[:,1], c = spectral_clustering(X, 0.5))
 
 
     
-![png](\images\output_52_1.png)
+![png](output_52_1.png)
     
 
 
@@ -691,7 +686,7 @@ plt.scatter(X[:,0], X[:,1], c = spectral_clustering(X, 0.6))
 
 
     
-![png](\images\output_53_1.png)
+![png](output_53_1.png)
     
 
 
@@ -709,7 +704,7 @@ plt.scatter(X[:,0], X[:,1], c = spectral_clustering(X, 0.7))
 
 
     
-![png](\images\output_54_1.png)
+![png](output_54_1.png)
     
 
 
@@ -727,7 +722,7 @@ plt.scatter(X[:,0], X[:,1], c = spectral_clustering(X, 0.4))
 
 
     
-![png](\images\output_55_1.png)
+![png](output_55_1.png)
     
 
 
@@ -745,7 +740,7 @@ plt.scatter(X[:,0], X[:,1], c = spectral_clustering(X, 0.8))
 
 
     
-![png](\images\output_56_1.png)
+![png](output_56_1.png)
     
 
 
