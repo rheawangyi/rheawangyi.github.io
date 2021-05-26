@@ -2,6 +2,7 @@
 layout: post
 title: Blog 3
 ---
+Though I don’t know if this is going to make a difference, some of my classmates used a vectorization layer for all three models. I’m concerned if this will lead to information exploitation (i.e. Though we claimed that we would use data from the texts only, we are actually using both to do the vectorization). So I decided to make a vectorization layer for each of the three models.
 
 Blog Post 3: Identify Fakes News.
 
@@ -348,15 +349,11 @@ def make_dataset(df):
     return data
 ```
 
+
 ```python
 # We create the dataset using the above defined function
 data = make_dataset(df)
 ```
-{::options parse_block_html="true" /}
-<div class="gave-help">
-I gave suggestions to one of my peers to potentially use lambda function instead of writing a function on your own to shorten the length of code. 
-</div>
-{::options parse_block_html="false" /}
 
 To train the model, we do train-test-split. 
 The tf.data.Dataset has built-in methods that will allow us to do this. We will leave out 20% of the data for validation purpose.
@@ -594,13 +591,6 @@ plt.legend()
 
 
 We see that though the accuracy on the training data is likely to increase, the accuracy on the validation dataset may not. This suggests that we might overfit the data if we do more training on the model, so we will stop here. The model with only title as input has 95% accuracy on the training dataset with a nearly 94% accuracy on the validation dataset, which is acceptable.
-
-
-{::options parse_block_html="true" /}
-<div class="got-help">
-Some of my peers suggested to use a vectorization layer for all three models, but I feel like making a vectorization layer for each of the three models might be better so I did not shorten the code.
-</div>
-{::options parse_block_html="false" /}
 
 **Model 2: Only the Article Texts as Input**
 
@@ -966,7 +956,8 @@ fig.show()
 
 ```
  
-{% include PCA.html %}
+![png](\images\newplot.png)
+    
 
 
 Words on the right seem to be relevant to political news: there are words relating to date like "monday", and other typical words in political news such as "Trump", "Macron","parties","europeans","chinese", "religions". On the left hand side, there are emotinoal words such as "simply","extremely","bad","correct". It appears to me that political news might just state the fact going on in the world so it might has less possibility to become fake news, so words on the right might be associated with real news.  
@@ -974,11 +965,5 @@ Words on the right seem to be relevant to political news: there are words relati
 {::options parse_block_html="true" /}
 <div class="got-help">
 I got suggestion that I should try to add my personal understanding and interpretation on the plot such as what kinds of words are related to fake news. I think it's a great suggestion so I add my comments of the plot above.
-</div>
-{::options parse_block_html="false" /}
-
-{::options parse_block_html="true" /}
-<div class="gave-help">
-One of my peer did not strucutre the code in this part very well, so I gave suggestions to one of my peers to make clear explanation on the code and make sure the most relavant two lines of codes are together and not sperated by other codes.
 </div>
 {::options parse_block_html="false" /}
